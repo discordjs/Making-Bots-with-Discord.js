@@ -28,8 +28,8 @@ Make sure you're using the latest LTS version of Node. To check your Node versio
 
 The underlying WebSocket behaviour has changed. In version 14, this was a non-breaking implementation of @discordjs/ws. Now, it is fully integrated with @discordjs/ws. See these pull requests for more information:
 
-- https://github.com/discordjs/discord.js/pull/10420
-- https://github.com/discordjs/discord.js/pull/10556
+- [discordjs/discord.js#10420](https://github.com/discordjs/discord.js/pull/10420)
+- [discordjs/discord.js#10556](https://github.com/discordjs/discord.js/pull/10556)
 
 ### CommandInteractionOptionResolver
 
