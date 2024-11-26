@@ -198,7 +198,7 @@ The reason parameter of `ThreadMemberManager#remove()` has been removed. Discord
 
 #### Avatar decoration
 
-Discord no longer sends avatar devoration data via `User#avatarDecoration`, so this property has been removed. `User#avatarDecorationData` is the replacement.
+Discord no longer sends avatar decoration data via `User#avatarDecoration`, so this property has been removed. `User#avatarDecorationData` is the replacement.
 
 #### Flags
 
