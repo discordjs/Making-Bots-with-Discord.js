@@ -47,7 +47,6 @@ The following error codes have been removed as they either have no use or are ha
 - `WSConnectionExists`
 - `WSNotOpen`
 - `ManagerDestroyed`
-- `BitFieldInvalid`
 - `ShardingInvalid`
 - `ShardingRequired`
 - `InvalidIntents`
