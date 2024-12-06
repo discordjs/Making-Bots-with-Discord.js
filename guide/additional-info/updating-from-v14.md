@@ -16,20 +16,60 @@ Make sure you're using the latest LTS version of Node. To check your Node versio
 
 ### Client
 
+#### Ping
+
+`Client#ping` has been added to replace the old `WebSocketManager#ping`. This will be `null` when the heartbeat from the gateway is yet to be received.
+
 #### Premium sticker packs
 
 `Client#fetchPremiumStickerPacks()` has been removed. Use `Client#fetchStickerPacks()` instead.
 
-#### "Webhook update"
+#### Ready event
+
+`client.on("ready")` has been removed. `"clientReady"` is the replacement. If you used `client.on(Events.ClientReady)`, you do not need to change anything.
+
+#### Shard disonnect event
+
+`client.on("shardDisconnect")` has been removed as the WebSocket manager replaces this functionality.
+
+#### Shard error event
+
+`client.on("shardError")` has been removed as the WebSocket manager replaces this functionality.
+
+#### Shard ready event
+
+`client.on("shardReady")` has been removed as the WebSocket manager replaces this functionality.
+
+#### Shard reconnecting event
+
+`client.on("shardReconnecting")` has been removed as the WebSocket manager replaces this functionality.
+
+#### Shard resume event
+
+`client.on("shardResume")` has been removed as the WebSocket manager replaces this functionality.
+
+#### Webhook update event
 
 `client.on("webhookUpdate")` has been removed. `"webhooksUpdate"` is the replacement. If you used `client.on(Events.WebhooksUpdate)`, you do not need to change anything.
 
 #### WebSocket
 
-The underlying WebSocket behaviour has changed. In version 14, this was a non-breaking implementation of @discordjs/ws. Now, it is fully integrated with @discordjs/ws. See these pull requests for more information:
+The underlying WebSocket behaviour has changed. In version 14, this was a non-breaking implementation of <DocsLink section="ws" />. Now, it is fully integrated. See these pull requests for more information:
 
 - [discordjs/discord.js#10420](https://github.com/discordjs/discord.js/pull/10420)
 - [discordjs/discord.js#10556](https://github.com/discordjs/discord.js/pull/10556)
+
+### ClientOptions
+
+Removed `ClientOptions#shards` and `ClientOptions#shardCount` in favor of `ClientOptions#ws#shardIds` and `ClientOptions#ws#shardCount`.
+
+### ClientUser
+
+`ClientUser#setPresence()` now returns a promise which resolves when the gateway call was sent successfully.
+
+### ClientPresence
+
+`ClientPresence#set()` now returns a promise which resolves when the gateway call was sent successfully.
 
 ### CommandInteractionOptionResolver
 
@@ -78,8 +118,12 @@ The following error codes have been removed as they either have no use or are ha
 
 ### Events
 
-`Events.WebhooksUpdate` now returns a string of `"webhooksUpdate"`. Previously, it returned `"webhookUpdate"`. This is to bring it in line with the name of Discord's gateway event (`WEBHOOKS_UPDATE`).
-
+- `Events.ShardError` has been removed.
+- `Events.ShardReady` has been remvoved.
+- `Events.ShardReconnecting` has been removed.
+- `Events.ShardResume` has been removed.
+- `Events.WebhooksUpdate` now returns a string of `"webhooksUpdate"`. Previously, it returned `"webhookUpdate"`. This is to bring it in line with the name of Discord's gateway event (`WEBHOOKS_UPDATE`).
+- `Events.ClientReady` now returns a string of `"clientReady"`. Previously, it returned `"ready"`. This is to ensure there's no confusion with Discord's `READY` gateway event.
 
 ### Formatters
 
@@ -92,6 +136,10 @@ This utility has been removed. Everything in this class is redundant as all meth
 - Formatters.userMention("123456789012345678");
 + userMention("123456789012345678");
 ```
+
+### Guild
+
+Removed `Guild#shard` as WebSocket shards are now handled by @discordjs/ws.
 
 ### GuildAuditLogs
 
@@ -169,6 +217,10 @@ However, you would have already noticed that this no longer works, so this metho
 
 `SelectMenuOptionBuilder` has been removed. Use `StringSelectMenuOptionBuilder` instead.
 
+### ShardClientUtil
+
+`ShardClientUtil#ids` and `ShardClientUtil#count` hav been removed in favor of `Client#ws#getShardIds()` and `Client#ws#getShardCount()`.
+
 ### StageInstance
 
 `StageInstance#discoverableDisabled` has been removed.
@@ -206,3 +258,7 @@ Discord no longer sends avatar decoration data via `User#avatarDecoration`, so t
 ### UserManager
 
 `UserManager#fetchFlags()` has been removed. All this did was fetch the user and return only its `flags` property. It was quite redundant.
+
+### WebSocketShardEvents
+
+`WebSocketShardEvents` has been replaced with `WebSocketShardEvents` from @discordjs/ws.
