@@ -155,7 +155,7 @@ Removed `Guild#shard` as WebSocket shards are now handled by @discordjs/ws.
 
 Previously, you would respond to an interaction ephemerally like so:
 
-```JavaScript
+```js
 // Way 1:
 await interaction.reply({ content: 'This is an ephemeral response.', ephemeral: true });
 
@@ -169,7 +169,7 @@ There are two ways to achieve the same behaviour, so the "helper" option has bee
 
 Discord no longer supports the `PREMIUM_REQUIRED` interaction response type. In the past, you would have done this:
 
-```JavaScript
+```js
 if (!premiumLogicCheck) {
 	// User does not have access to our premium features.
 	await interaction.sendPremiumRequired();
