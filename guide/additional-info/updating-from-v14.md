@@ -2,7 +2,7 @@
 
 ## Before you start
 
-Make sure you're using the latest LTS version of Node. To check your Node version, use `node -v` in your terminal or command prompt, and if it's not high enough, update it! There are many resources online to help you with this step based on your host system.
+Make sure you're using the latest LTS version of Node. To check your Node version, use `node --version` in your terminal or command prompt, and if it's not high enough, update it! There are many resources online to help you with this step based on your host system.
 
 ## Breaking Changes
 
