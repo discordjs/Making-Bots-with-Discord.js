@@ -32,7 +32,7 @@ Make sure you're using the latest LTS version of Node. To check your Node versio
 
 `client.on("shardDisconnect")` has been removed as the WebSocket manager replaces this functionality.
 
-#### Shard error event
+#### Shard error event
 
 `client.on("shardError")` has been removed as the WebSocket manager replaces this functionality.
 
@@ -63,7 +63,7 @@ The underlying WebSocket behaviour has changed. In version 14, this was a non-br
 
 Removed `ClientOptions#shards` and `ClientOptions#shardCount` in favor of `ClientOptions#ws#shardIds` and `ClientOptions#ws#shardCount`.
 
-### ClientUser
+### ClientUser
 
 `ClientUser#setPresence()` now returns a promise which resolves when the gateway call was sent successfully.
 
