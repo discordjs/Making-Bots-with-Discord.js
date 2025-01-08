@@ -71,6 +71,10 @@ The `identify` scope will allow your application to get basic user information f
 
 ### Implicit grant flow
 
+::: danger
+Implict grant flow is a deprecated grant type due to being vulnerable to token leakage and replay attacks. It is advised to use the authorization code grant flow instead. For more information check [here](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-10#name-removal-of-the-oauth-20-imp) and [here](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics-24#name-implicit-grant).
+:::
+
 You have your website, and you have a URL. Now you need to use those two things to get an access token. For basic applications like [SPAs](https://en.wikipedia.org/wiki/Single-page_application), getting an access token directly is enough. You can do so by changing the `response_type` in the URL to `token`. However, this means you will not get a refresh token, which means the user will have to explicitly re-authorize when this access token has expired.
 
 After you change the `response_type`, you can test the URL right away. Visiting it in your browser, you will be directed to a page that looks like this:
