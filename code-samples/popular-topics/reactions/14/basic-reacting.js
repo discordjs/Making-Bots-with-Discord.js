@@ -14,13 +14,17 @@ client.on(Events.InteractionCreate, async interaction => {
 	const { commandName } = interaction;
 
 	if (commandName === 'react') {
-		const message = await interaction.reply({ content: 'You can react with Unicode emojis!', fetchReply: true });
+		const response = await interaction.reply({ content: 'You can react with Unicode emojis!', withResponse: true });
+		const { message } = response.resource;
 		message.react('😄');
 	} else if (commandName === 'react-custom') {
-		const message = await interaction.reply({ content: 'You can react with custom emojis!', fetchReply: true });
+		const response = await interaction.reply({ content: 'You can react with custom emojis!', withResponse: true });
+		const { message } = response.resource;
 		message.react('123456789012345678');
 	} else if (commandName === 'fruits') {
-		const message = await interaction.reply({ content: 'Reacting with fruits!', fetchReply: true });
+		const response = await interaction.reply({ content: 'Reacting with fruits!', withResponse: true });
+		const { message } = response.resource;
+
 		message.react('🍎')
 			.then(() => message.react('🍊'))
 			.then(() => message.react('🍇'))

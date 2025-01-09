@@ -200,9 +200,14 @@ await interaction.reply('Pong!');
 await interaction.deleteReply();
 ```
 
-Lastly, you may require the `Message` object of a reply for various reasons, such as adding reactions. You can use the `ChatInputCommandInteraction#fetchReply()` method to fetch the `Message` instance of an initial response:
+Lastly, you may require the `Message` object of a reply for various reasons, such as adding reactions. Pass `withResponse: true` to obtain the <DocsLink path="InteractionCallbackResponse:Class" />. You can then access the `Message` object like so:
 
-<!-- eslint-skip -->
+```js
+const response = await interaction.reply({ content: 'Pong!', withResponse: true });
+console.log(response.resource.message);
+```
+
+You can also use the `ChatInputCommandInteraction#fetchReply()` method to fetch the `Message` instance. Do note that this incurs an extra API call in comparison to `withResponse: true`:
 
 ```js
 await interaction.reply('Pong!');

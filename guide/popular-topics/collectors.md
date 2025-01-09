@@ -66,9 +66,9 @@ const collectorFilter = response => {
 	return item.answers.some(answer => answer.toLowerCase() === response.content.toLowerCase());
 };
 
-interaction.reply({ content: item.question, fetchReply: true })
-	.then(() => {
-		interaction.channel.awaitMessages({ filter: collectorFilter, max: 1, time: 30_000, errors: ['time'] })
+interaction.reply({ content: item.question, withResponse: true })
+	.then(response => {
+		response.resource.message.channel.awaitMessages({ filter: collectorFilter, max: 1, time: 30_000, errors: ['time'] })
 			.then(collected => {
 				interaction.followUp(`${collected.first().author} got the correct answer!`);
 			})

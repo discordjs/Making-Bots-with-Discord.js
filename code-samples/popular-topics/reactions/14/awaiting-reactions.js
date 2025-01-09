@@ -12,7 +12,8 @@ client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 
 	if (interaction.commandName === 'react-await') {
-		const message = await interaction.reply({ content: 'Awaiting emojis...', fetchReply: true });
+		const response = await interaction.reply({ content: 'Awaiting emojis...', withResponse: true });
+		const { message } = response.resource;
 		message.react('👍').then(() => message.react('👎'));
 
 		const collectorFilter = (reaction, user) => {

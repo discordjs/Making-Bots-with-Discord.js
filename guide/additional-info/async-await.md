@@ -101,7 +101,8 @@ If you don't know how Node.js asynchronous execution works, you would probably t
 client.on(Events.InteractionCreate, interaction => {
 	// ...
 	if (commandName === 'react') {
-		const message = interaction.reply({ content: 'Reacting!', fetchReply: true });
+		const response = interaction.reply({ content: 'Reacting!', withResponse: true });
+		const { message } = response.resource;
 		message.react('🇦');
 		message.react('🇧');
 		message.react('🇨');
@@ -115,8 +116,10 @@ But since all of these methods are started at the same time, it would just be a 
 client.on(Events.InteractionCreate, interaction => {
 	// ...
 	if (commandName === 'react') {
-		interaction.reply({ content: 'Reacting!', fetchReply: true })
-			.then(message => {
+		interaction.reply({ content: 'Reacting!', withResponse: true })
+			.then(response => {
+				const { message } = response.resource;
+
 				message.react('🇦')
 					.then(() => message.react('🇧'))
 					.then(() => message.react('🇨'))
@@ -134,7 +137,8 @@ In this piece of code, the Promises are [chain resolved](https://developer.mozil
 client.on(Events.InteractionCreate, async interaction => {
 	// ...
 	if (commandName === 'react') {
-		const message = await interaction.reply({ content: 'Reacting!', fetchReply: true });
+		const response = await interaction.reply({ content: 'Reacting!', withResponse: true });
+		const { message } = response.resource;
 		await message.react('🇦');
 		await message.react('🇧');
 		await message.react('🇨');
@@ -148,7 +152,8 @@ It's mostly the same code, but how would you catch Promise rejections now since 
 client.on(Events.InteractionCreate, async interaction => {
 	if (commandName === 'react') {
 		try {
-			const message = await interaction.reply({ content: 'Reacting!', fetchReply: true });
+			const response = await interaction.reply({ content: 'Reacting!', withResponse: true });
+			const { message } = response.resource;
 			await message.react('🇦');
 			await message.react('🇧');
 			await message.react('🇨');
@@ -169,8 +174,8 @@ Let's look at an example where you want to delete a sent reply.
 client.on(Events.InteractionCreate, interaction => {
 	// ...
 	if (commandName === 'delete') {
-		interaction.reply({ content: 'This message will be deleted.', fetchReply: true })
-			.then(replyMessage => setTimeout(() => replyMessage.delete(), 10_000))
+		interaction.reply({ content: 'This message will be deleted.', withResponse: true })
+			.then(response => setTimeout(() => response.resource.message.delete(), 10_000))
 			.catch(error => {
 				// handle error
 			});
@@ -178,14 +183,14 @@ client.on(Events.InteractionCreate, interaction => {
 });
 ```
 
-The return value of a `.reply()` with the `fetchReply` option set to `true` is a Promise which resolves with the reply when it has been sent, but how would the same code with async/await look?
+The return value of a `.reply()` with the `withResponse` option set to `true` is a promise which resolves with <DocsLink path="InteractionCallbackResponse:Class" />, but how would the same code with async/await look?
 
 ```js {1,4-10}
 client.on(Events.InteractionCreate, async interaction => {
 	if (commandName === 'delete') {
 		try {
-			const replyMessage = await interaction.reply({ content: 'This message will be deleted.', fetchReply: true });
-			setTimeout(() => replyMessage.delete(), 10_000);
+			const response = await interaction.reply({ content: 'This message will be deleted.', withResponse: true });
+			setTimeout(() => response.resource.message.delete(), 10_000);
 		} catch (error) {
 			// handle error
 		}

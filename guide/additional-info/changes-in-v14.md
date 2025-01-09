@@ -311,7 +311,7 @@ The following properties & methods have been moved to the `GuildAuditLogsEntry` 
 
 ### Interaction
 
-Whenever an interaction is replied to and one fetches the reply, it could possibly give an `APIMessage` if the guild was not cached. However, interaction replies now always return a discord.js `Message` object with `fetchReply` as `true`.
+Whenever an interaction is replied to and one fetches the reply, it could possibly give an `APIMessage` if the guild was not cached. However, interaction replies now always return an <DocsLink path="InteractionCallbackResponse:Class" /> with `withResponse` set to `true`.
 
 The base interaction class is now `BaseInteraction`.
 

@@ -319,7 +319,7 @@ If you're using [sharding](/sharding/), a specific shard's heartbeat can be foun
 The second, **Roundtrip Latency**, describes the amount of time a full API roundtrip (from the creation of the command message to the creation of the response message) takes. You then edit the response to the respective value to avoid needing to send yet another message:
 
 ```js
-const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true });
+const sent = await interaction.reply({ content: 'Pinging...' });
 interaction.editReply(`Roundtrip latency: ${sent.createdTimestamp - interaction.createdTimestamp}ms`);
 ```
 
