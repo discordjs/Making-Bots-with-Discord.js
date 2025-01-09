@@ -21,6 +21,7 @@ export default {
 				'/voice/voice-connections.md',
 				'/voice/audio-player.md',
 				'/voice/audio-resources.md',
+				'/voice/seeking.md'
 			],
 		},
 	],
