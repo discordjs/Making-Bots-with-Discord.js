@@ -30,13 +30,14 @@
     },
     "homepage": "https://discordjs.guide",
     "devDependencies": {
+        "@babel/eslint-parser": "^7.17.0",
         "@vuepress/plugin-docsearch": "^2.0.0-beta.24",
         "@vuepress/plugin-google-analytics": "^2.0.0-beta.24",
         "eslint": "^7.18.0",
         "eslint-config-sora": "^3.1.0",
         "eslint-plugin-markdown": "^1.0.0",
         "eslint-plugin-vue": "^7.5.0",
-        "@babel/eslint-parser": "^7.17.0",
+        "vite": "^2.5.0",
         "vuepress-vite": "^2.0.0-beta.24"
     },
     "dependencies": {
