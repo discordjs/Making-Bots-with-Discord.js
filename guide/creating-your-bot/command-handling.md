@@ -18,8 +18,32 @@ This page details how to complete **Step 2**. Make sure to also complete the oth
 
 Now that your command files have been created, your bot needs to load these files on startup. 
 
-In your `index.js` file, make these additions to the base template:
+In your `index.js` or `index.ts` file, make these additions to the base template:
 
+::::: typescript-tip
+TypeScript will not let you attach a `commands` property to your client instance without some work. We'll need to extend the base `Client` class and create our own `ExtendedClient` class with the additional properties we need.
+
+Add the following file:
+:::: code-group
+::: code-group-item src/structures/ExtendedClient.ts
+```ts
+import { Client, ClientOptions, Collection } from 'discord.js';
+import { SlashCommand } from '../types/SlashCommand';
+
+export class ExtendedClient extends Client {
+    constructor(options: ClientOptions, public commands: Collection<string, SlashCommand> = new Collection()) {
+        super(options);
+    }
+}
+```
+
+This class can be instantiated just like the `Client` class, except it also accepts a second `commands` parameter. This parameter will default to an empty `Collection` if nothing is passed as an argument.
+:::
+::::
+:::::
+
+:::: code-group
+::: code-group-item js
 ```js {1-3,8}
 const fs = require('node:fs');
 const path = require('node:path');
@@ -30,8 +54,31 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
 ```
+:::
+:::code-group-item ts
+```ts {1-2}
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { ExtendedClient } from './structures/ExtendedClient';
+import { Config, assertObjectIsConfig } from './types/Config';
 
-We recommend attaching a `.commands` property to your client instance so that you can access your commands in other files. The rest of the examples in this guide will follow this convention. For TypeScript users, we recommend extending the base Client class to add this property, [casting](https://www.typescripttutorial.net/typescript-tutorial/type-casting/), or [augmenting the module type](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation).
+// Read the config file
+const configRaw = fs.readFileSync('../config.json', { encoding: 'utf-8' });
+const config = JSON.parse(configRaw);
+
+assertObjectIsConfig(config);
+
+
+const { token } = config;
+
+// ExtendedClient's second `commands` parameter defaults to an empty Collection
+const client = new ExtendedClient({ intents: [GatewayIntentBits.Guilds] });
+```
+:::
+::::
+
+We recommend attaching a `.commands` property to your client instance so that you can access your commands in other files. The rest of the examples in this guide will follow this convention. 
 
 ::: tip
 - The [`fs`](https://nodejs.org/api/fs.html) module is Node's native file system module. `fs` is used to read the `commands` directory and identify our command files.
@@ -41,6 +88,8 @@ We recommend attaching a `.commands` property to your client instance so that yo
 
 Next, using the modules imported above, dynamically retrieve your command files with a few more additions to the `index.js` file:
 
+:::: code-group
+::: code-group-item js
 ```js {3-19}
 client.commands = new Collection();
 
@@ -62,6 +111,36 @@ for (const folder of commandFolders) {
 	}
 }
 ```
+:::
+::: code-group-item ts
+```ts {3-19}
+const foldersPath = path.join(__dirname, '../build/commands');
+const commandFolders = fs.readdirSync(foldersPath);
+
+for (const folder of commandFolders) {
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		import(filePath).then(module => {
+            const command = module.default;
+            // Set a new item in the Collection with the key as the command name and the value as the exported module
+            if ('data' in command && 'execute' in command) {
+                client.commands.set(command.data.name, command);
+            } else {
+                console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+            }
+        });
+	}
+}
+
+```
+:::
+::::
+
+::: typescript-tip
+The code above may require slight modifications depending on your `tsconfig.json`. In particular, if the `module` option is changed from the default `commonjs` value to one of the ESM values, you will need to change the `filePath` inside the `import()` call, as ESM does not support importing modules from absolute paths without a `file:///` prefix. You will also need to use `import.meta.dirname` instead of `__dirname`. Your mileage may vary!
+:::
 
 First, [`path.join()`](https://nodejs.org/api/path.html) helps to construct a path to the `commands` directory. The first [`fs.readdirSync()`](https://nodejs.org/api/fs.html#fs_fs_readdirsync_path_options) method then reads the path to the directory and returns an array of all the folder names it contains, currently `['utility']`. The second `fs.readdirSync()` method reads the path to this directory and returns an array of all the file names they contain, currently `['ping.js', 'server.js', 'user.js']`. To ensure only command files get processed, `Array.filter()` removes any non-JavaScript files from the array.
 

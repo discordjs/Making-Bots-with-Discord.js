@@ -2,6 +2,7 @@ import path from 'path';
 import { defineUserConfig } from 'vuepress-vite';
 import type { DefaultThemeOptions, ViteBundlerOptions } from 'vuepress-vite';
 import sidebar from './sidebar';
+import container from 'markdown-it-container';
 
 const config = defineUserConfig<DefaultThemeOptions, ViteBundlerOptions>({
 	bundler: '@vuepress/vite',
@@ -47,6 +48,20 @@ const config = defineUserConfig<DefaultThemeOptions, ViteBundlerOptions>({
 		},
 	},
 	plugins: [],
+	extendsMarkdown: md => {
+		console.log('hello');
+		md.use(container, 'typescript-tip', {
+			render: (tokens: { info: string, nesting: number }[], idx: number) => {
+				const token = tokens[idx];
+				const info = token.info.trim().slice('typescript-tip'.length).trim();
+				const content = info || 'TYPESCRIPT';
+				if (token.nesting === 1) {
+					return `<div class="typescript-tip custom-block"><p class="custom-block-title">${content}</p>\n`;
+				}
+				return `</div>\n`;
+			},
+		});
+	}
 });
 
 const { ALGOLIA_DOCSEARCH_API_KEY, ALGOLIA_DOCSEARCH_APP_ID, GOOGLE_ANALYTICS_ID, NODE_ENV } = process.env;

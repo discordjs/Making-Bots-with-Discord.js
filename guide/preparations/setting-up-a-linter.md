@@ -140,3 +140,85 @@ The major points of this setup would be:
 * Limiting nested callbacks to 4. If you hit this error, it is a good idea to consider refactoring your code.
 
 If your current code style is a bit different, or you don't like a few of these rules, that's perfectly fine! Just head over to the [ESLint docs](https://eslint.org/docs/rules/), find the rule(s) you want to modify, and change them accordingly.
+
+::: TypeScript
+
+Linting TypeScript code with ESLint requires a bit more work. First, you'll want to install the required packages:
+
+:::: code-group
+::: code-group-item npm
+```sh:no-line-numbers
+npm install --save-dev eslint @eslint/js @types/eslint__js typescript typescript-eslint
+```
+:::
+::: code-group-item yarn
+```sh:no-line-numbers
+yarn add --dev eslint @eslint/js @types/eslint__js typescript typescript-eslint
+```
+:::
+::: code-group-item pnpm
+```sh:no-line-numbers
+pnpm add --save-dev eslint @eslint/js @types/eslint__js typescript typescript-eslint
+```
+:::
+::::
+
+Your `.eslintrc.json` file will also look slightly different:
+
+```json {2-7}
+{
+	"extends": [
+		"eslint:recommended"
+		"plugin:@typescript-eslint/recommended-type-checked",
+    	"plugin:@typescript-eslint/stylistic-type-checked",
+	],
+	"env": {
+		"node": true,
+		"es6": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 2021
+	},
+	"rules": {
+		"arrow-spacing": ["warn", { "before": true, "after": true }],
+		"brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+		"comma-dangle": ["error", "always-multiline"],
+		"comma-spacing": "error",
+		"comma-style": "error",
+		"curly": ["error", "multi-line", "consistent"],
+		"dot-location": ["error", "property"],
+		"handle-callback-err": "off",
+		"indent": ["error", "tab"],
+		"keyword-spacing": "error",
+		"max-nested-callbacks": ["error", { "max": 4 }],
+		"max-statements-per-line": ["error", { "max": 2 }],
+		"no-console": "off",
+		"no-empty-function": "error",
+		"no-floating-decimal": "error",
+		"no-inline-comments": "error",
+		"no-lonely-if": "error",
+		"no-multi-spaces": "error",
+		"no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
+		"no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
+		"no-trailing-spaces": ["error"],
+		"no-var": "error",
+		"object-curly-spacing": ["error", "always"],
+		"prefer-const": "error",
+		"quotes": ["error", "single"],
+		"semi": ["error", "always"],
+		"space-before-blocks": "error",
+		"space-before-function-paren": ["error", {
+			"anonymous": "never",
+			"named": "never",
+			"asyncArrow": "always"
+		}],
+		"space-in-parens": "error",
+		"space-infix-ops": "error",
+		"space-unary-ops": "error",
+		"spaced-comment": "error",
+		"yoda": "error"
+	}
+}
+```
+
+Note that the only difference is that extra base configs were added to the `extends` property.

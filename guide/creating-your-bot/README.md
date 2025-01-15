@@ -31,6 +31,48 @@ console.log(token);
 If you're using Git, you should not commit this file and should [ignore it via `.gitignore`](/creating-your-bot/#git-and-gitignore).
 :::
 
+::: typescript-tip
+You'll also want to create an interface for your config so you can get type checking when using config values. Create a file called `Config.ts` under `src/types` with the following contents:
+```ts
+export interface Config {
+	token: string;
+	guildId: string;
+	// Other values can be added here
+}
+
+// Set up a rudimentary assertion function to type assert values
+export function assertObjectIsConfig(obj: unknown): asserts obj is Config {
+	if (obj === null || obj === undefined) {
+		throw new TypeError('config cannot be null/undefined.');
+	}
+
+	const expectedValues = [
+		{
+			key: 'token',
+			type: 'string',
+		},
+		{
+			key: 'guildId',
+			type: 'string',
+		},
+	]; // Add more keys if necessary
+
+    if (typeof obj !== 'object') {
+		throw new TypeError('config must be an object.');
+    }
+
+	for (const { key, type } of expectedValues) {
+		const value = (obj as Record<string, unknown>)[key];
+		if (typeof value !== type) {
+			throw new TypeError(`Expected '${key}' to be of type '${type}', but received '${typeof value}'`);
+		}
+	}
+}
+```
+
+Note that we manually validated the `obj` parameter in the assertion function `objectIsConfig`. A cleaner, more robust approach would be to use a validation library to handle this, though this is outside the scope of this guide.
+:::
+
 ## Using environment variables
 
 Environment variables are special values for your environment (e.g., terminal session, Docker container, or environment variable file). You can pass these values into your code's scope so that you can use them.

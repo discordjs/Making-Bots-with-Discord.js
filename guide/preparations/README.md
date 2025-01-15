@@ -140,3 +140,79 @@ And that's it! With all the necessities installed, you're almost ready to start 
 ## Installing a linter
 
 While you are coding, it's possible to run into numerous syntax errors or code in an inconsistent style. You should [install a linter](/preparations/setting-up-a-linter.md) to ease these troubles. While code editors generally can point out syntax errors, linters coerce your code into a specific style as defined by the configuration. While this is not required, it is advised.
+
+## TypeScript
+
+### Installation
+
+Discord.js comes with TypeScript support out of the box. If you want to use TypeScript, you'll need to additionally install TypeScript in your project:
+
+:::: code-group
+::: code-group-item npm
+```sh:no-line-numbers
+npm install typescript
+```
+:::
+::: code-group-item yarn
+```sh:no-line-numbers
+yarn add typescript
+```
+:::
+::: code-group-item pnpm
+```sh:no-line-numbers
+pnpm add typescript
+```
+:::
+::::
+
+Next, you'll need to create a `tsconfig.json` file, which is used to configure the TypeScript environment in a project. A `tsconfig.json` with reasonable defaults can be generated using the following command:
+
+:::: code-group
+::: code-group-item npm
+```sh:no-line-numbers
+npx tsc --init
+```
+:::
+::: code-group-item yarn
+```sh:no-line-numbers
+yarn exec tsc --init
+```
+:::
+::: code-group-item pnpm
+```sh:no-line-numbers
+pnpm exec tsc --init
+```
+:::
+::::
+
+### Project organization
+
+The default `tsconfig.json` is mostly usable out of the box, but there's one particular change that can should be made. If you check the commented `outDir` option, you'll see that it defaults to emitting compiled code into the project root. To keep things organized, change this to `"./build"`. This will tell the compiler to emit all built code into the `build` folder.
+
+Another option that should be changed is the `rootDir` option, which defaults to the project root. Uncomment the option and set it to `"./src"`.
+
+::: tip
+Feel free to explore all the other options that can be configured in the `tsconfig.json`. If generated with the above command, the file will contain comments explaining each option.
+:::
+
+### package.json scripts
+
+Because TypeScript compiles down to JavaScript before execution, we'll need to add a build step to our project. The build step will be simple: all it will do is call `tsc`. The compiler will automatically pick up the `tsconfig.json`. To add the build step, add a `build` property with value `tsc` under the `scripts` object in your `package.json`.
+
+In addition to adding a build step, we won't be able to execute the TypeScript code directly, so for convenience, add another value in the `scripts` object that simple starts up node with the main file.
+
+Your final `package.json` should look similar to this:
+
+```jsonc{7,8}
+{
+  "name": "CoolBot",
+  "version": "1.0.0",
+  "description": "This project is for a very cool bot.",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./build/index.js"
+  },
+  // ...
+}
+```
