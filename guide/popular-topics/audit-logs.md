@@ -32,7 +32,7 @@ const fetchedLogs = await guild.fetchAuditLogs({
 const firstEntry = fetchedLogs.entries.first();
 ```
 
-This will return the first entry where an invite was created. You used `limit: 1` here to specify only one entry.
+This will return the first entry where an invite was created - it's worth noting that 'first' entry is the newest, or most recent, one. You used `limit: 1` here to specify only one entry.
 
 ## Receiving Audit Logs
 
