@@ -309,11 +309,11 @@ client.on(Events.GuildMemberUpdate, (oldMember, newMember) => {
 There are two common measurements for bot pings. The first, **websocket heartbeat**, is the average interval of a regularly sent signal indicating the healthy operation of the websocket connection the library receives events over:
 
 ```js
-interaction.reply(`Websocket heartbeat: ${client.ws.ping}ms.`);
+interaction.reply(`Websocket heartbeat: ${client.ping}ms.`);
 ```
 
 ::: tip
-If you're using [sharding](/sharding/), a specific shard's heartbeat can be found on the WebSocketShard instance, accessible at `client.ws.shards.get(id).ping`.
+If you're using [sharding](/sharding/), a specific shard's heartbeat can be found on the WebSocketShard instance, accessible at `client.pings.get(id)`.
 :::
 
 The second, **Roundtrip Latency**, describes the amount of time a full API roundtrip (from the creation of the command message to the creation of the response message) takes. You then edit the response to the respective value to avoid needing to send yet another message:

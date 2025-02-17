@@ -97,7 +97,7 @@ The <DocsLink path="AutocompleteInteraction:Class"/> class provides the <DocsLin
 Unlike static choices, autocompletion suggestions are *not* enforced, and users may still enter free text.
 :::
 
-The <DocsLink path="CommandInteractionOptionResolver:Class#getFocused" type="method"/> method returns the currently focused option's value, which can be used to apply filtering to the choices presented. For example, to only display options starting with the focused value you can use the `Array#filter()` method, then using `Array#map()`, you can transform the array into an array of <DocsLink path="ApplicationCommandOptionChoiceData:Interface" /> objects.
+The <DocsLink path="CommandInteractionOptionResolver:Class#getFocused" type="method"/> method returns the currently focused option, which can be used to apply filtering to the choices presented. For example, to only display options starting with the focused value, you can use the `Array#filter()` method. Then, using `Array#map()`, you can transform the array into an array of <DocsLink path="ApplicationCommandOptionChoiceData:Interface" /> objects.
 
 ```js {10-15}
 module.exports = {
@@ -109,7 +109,7 @@ module.exports = {
 				.setDescription('Phrase to search for')
 				.setAutocomplete(true)),
 	async autocomplete(interaction) {
-		const focusedValue = interaction.options.getFocused();
+		const focusedValue = interaction.options.getFocused().value;
 		const choices = ['Popular Topics: Threads', 'Sharding: Getting started', 'Library: Voice Connections', 'Interactions: Replying to slash commands', 'Popular Topics: Embed preview'];
 		const filtered = choices.filter(choice => choice.startsWith(focusedValue));
 		await interaction.respond(
@@ -121,7 +121,7 @@ module.exports = {
 
 ### Handling multiple autocomplete options
 
-To distinguish between multiple options, you can pass `true` into <DocsLink path="CommandInteractionOptionResolver:Class#getFocused" type="method"/>, which will now return the full focused object instead of just the value. This is used to get the name of the focused option below, allowing for multiple options to each have their own set of suggestions:
+By making use of `name`, you can distinguish between multiple options and provide different suggestions for each:
 
 ```js {10-19}
 module.exports = {
@@ -137,7 +137,7 @@ module.exports = {
 				.setDescription('Version to search in')
 				.setAutocomplete(true)),
 	async autocomplete(interaction) {
-		const focusedOption = interaction.options.getFocused(true);
+		const focusedOption = interaction.options.getFocused();
 		let choices;
 
 		if (focusedOption.name === 'query') {

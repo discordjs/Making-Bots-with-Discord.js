@@ -13,13 +13,13 @@ Threads introduce a number of new gateway events, which are listed below:
 - <DocsLink path="Client:Class#threadCreate" />: Emitted whenever a thread is created or when the client user is added to a thread.
 - <DocsLink path="Client:Class#threadDelete" />: Emitted whenever a thread is deleted.
 - <DocsLink path="Client:Class#threadUpdate" />: Emitted whenever a thread is updated (e.g. name change, archive state change, locked state change).
-- <DocsLink path="Client:Class#threadListSync" />: Emitted whenever the client user gains access to a text or news channel that contains threads.
+- <DocsLink path="Client:Class#threadListSync" />: Emitted whenever the client user gains access to a text or announcement channel that contains threads.
 - <DocsLink path="Client:Class#threadMembersUpdate" />: Emitted whenever members are added or removed from a thread. Requires <code>GuildMembers</code> privileged intent.
 - <DocsLink path="Client:Class#threadMemberUpdate" />: Emitted whenever the client user's thread member is updated.
 
 ## Creating and deleting threads
 
-Threads are created and deleted using the <DocsLink path="GuildTextThreadManager:Class" /> of a text or news channel.
+Threads are created and deleted using the <DocsLink path="GuildTextThreadManager:Class" /> of a text or announcement channel.
 To create a thread you call the <DocsLink path="GuildTextThreadManager:Class#create" type="method" /> method:
 
 <!-- eslint-skip -->
