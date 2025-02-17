@@ -53,6 +53,8 @@ You're only going to move these two events from `index.js`. The code for [loadin
 
 Your project directory should look something like this:
 
+:::: code-group
+::: code-group-item js
 ```:no-line-numbers
 discord-bot/
 ├── commands/
@@ -63,6 +65,23 @@ discord-bot/
 ├── package-lock.json
 └── package.json
 ```
+:::
+::: code-group-item ts
+```:no-line-numbers
+discord-bot/
+├── node_modules
+├── src
+	├── types
+		├── Config.ts
+	├── index.ts
+├── config.json
+├── tsconfig.json
+├── package-lock.json
+└── package.json
+```
+:::
+::::
+
 
 Create an `events` folder in the same directory. You can then move the code from your event listeners in `index.js` to separate files: `events/ready.js` and `events/interactionCreate.js`.
 
@@ -140,6 +159,80 @@ for (const folder of commandFolders) {
 client.login(token);
 ```
 :::
+::: code-group-item src/types/EventHandler.ts
+```ts
+import { BaseInteraction, Events } from 'discord.js';
+
+export interface EventHandler {
+	name: Events;
+	once?: boolean;
+	execute: (...args: unknown[]) => Promise<void>;
+}
+```
+:::
+::: code-groupitem src/events/ready.ts
+```ts
+import { Events } from 'discord.js';
+import { EventHandler } from '../types/EventHandler';
+
+const eventHandler: EventHandler = {
+	name: Events.ClientReady,
+	once: true,
+	execute(client) {
+		console.log(`Ready! Logged in as ${client.user.tag}`);
+	},
+};
+```
+:::
+::: code-group-item events/ready.ts
+```js
+import { Events } from 'discord.js';
+import { EventHandler } from '../../types/EventHandler';
+
+const eventHandler: EventHandler = {
+	name: Events.ClientReady,
+	once: true,
+	execute(client) {
+		console.log(`Ready! Logged in as ${client.user.tag}`);
+	},
+};
+
+export default eventHandler;
+```
+:::
+::: code-group-item src/events/interactionCreate.ts
+```ts
+import { Events } from 'discord.js';
+import { EventHandler } from '../types/EventHandler';
+
+const eventHandler: EventHandler = {
+	name: Events.InteractionCreate,
+	async execute(interaction) {
+		if (!interaction.isChatInputCommand()) return;
+
+		const command = interaction.client.commands.get(interaction.commandName);
+
+		if (!command) {
+			console.error(`No command matching ${interaction.commandName} was found.`);
+			return;
+		}
+
+		try {
+			await command.execute(interaction);
+		} catch (error) {
+			console.error(error);
+			if (interaction.replied || interaction.deferred) {
+				await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+			} else {
+				await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			}
+		}
+	},
+}
+
+export default eventHandler;
+```
+:::
 ::::
 
 The `name` property states which event this file is for, and the `once` property holds a boolean value that specifies if the event should run only once. You don't need to specify this in `interactionCreate.js` as the default behavior will be to run on every event instance. The `execute` function holds your event logic, which will be called by the event handler whenever the event emits.
@@ -150,6 +243,8 @@ Next, let's write the code for dynamically retrieving all the event files in the
 
 `fs.readdirSync().filter()` returns an array of all the file names in the given directory and filters for only `.js` files, i.e. `['ready.js', 'interactionCreate.js']`.
 
+:::: code-group
+::: code-group-item js
 ```js {26-37}
 const fs = require('node:fs');
 const path = require('node:path');
@@ -191,6 +286,66 @@ for (const file of eventFiles) {
 
 client.login(token);
 ```
+:::
+::: code-group-item ts
+```ts
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { ExtendedClient } from './structures/ExtendedClient';
+import { Config, assertObjectIsConfig } from './types/Config';
+
+// Read the config file
+const configRaw = fs.readFileSync('../config.json', { encoding: 'utf-8' });
+const config = JSON.parse(configRaw);
+
+assertObjectIsConfig(config);
+
+const { token } = config;
+
+// ExtendedClient's second `commands` parameter defaults to an empty Collection
+const client = new ExtendedClient({ intents: [GatewayIntentBits.Guilds] });
+
+const foldersPath = path.join(__dirname, '../build/commands');
+const commandFolders = fs.readdirSync(foldersPath);
+
+for (const folder of commandFolders) {
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		import(filePath).then(module => {
+            const command = module.default;
+            // Set a new item in the Collection with the key as the command name and the value as the exported module
+            if ('data' in command && 'execute' in command) {
+                client.commands.set(command.data.name, command);
+            } else {
+                console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+            }
+        });
+	}
+}
+
+const eventsPath = path.join(__dirname, '../build/events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	import(filePath).then(module => {
+		const event = module.default;
+
+		if (event.once) {
+			client.once(event.name, (...args) => event.execute(...args));
+		} else {
+			client.on(event.name, (...args) => event.execute(...args));
+		}
+	});
+}
+
+client.login(token);
+```
+:::
+::::
 
 You'll notice the code looks very similar to the command loading above it - read the files in the events folder and load each one individually.
 

@@ -71,3 +71,14 @@ div[class*=language-].line-numbers-mode::after {
 		padding: 0.2em;
 	}
 }
+
+.typescript-tip {
+	margin: 1rem 0;
+	padding: .1rem 1.5rem;
+	border-radius: 0.4rem;
+	background-color: #769FF0;
+
+	.title {
+		font-weight: bold;
+	}
+}
