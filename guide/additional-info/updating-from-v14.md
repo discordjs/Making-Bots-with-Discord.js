@@ -14,6 +14,10 @@ Make sure you're using the latest LTS version of Node. To check your Node versio
 
 `ApplicationCommand#dmPermission` and `ApplicationCommand#setDMPermission()` have been removed. This was legacy functionality for commands—use contexts instead.
 
+### ApplicationCommandManager
+
+`ApplicationCommandManager#fetch()` method has been updated for consistency with other managers. Previously, it accepted two parameters: `id` (a snowflake or an options object) and an `options` object. Now, it only accepts a single `options` argument, which can be a snowflake or an options object that may include an `id` property.
+
 ### AnnouncementChannel
 
 `AnnouncementChannel#addFollower()` now returns `FollowedChannelData` instead of a snowflake. This helps to expose the created webhook id in the target channel.
@@ -23,6 +27,10 @@ Make sure you're using the latest LTS version of Node. To check your Node versio
 `BaseInteraction#isAnySelectMenu()` has been removed. Use `BaseInteraction#isSelectMenu()` instead, which has been repurposed to accept all select menu component types.
 
 ### Client
+
+#### Emojis
+
+`Client#emojis` has been removed due to confusion with the introduction of application emojis and performance impact. Use `resolveGuildEmoji` utility function to get a cached guild emoji.
 
 #### Ping
 
@@ -66,6 +74,10 @@ The underlying WebSocket behaviour has changed. In version 14, this was a non-br
 
 - [discordjs/discord.js#10420](https://github.com/discordjs/discord.js/pull/10420)
 - [discordjs/discord.js#10556](https://github.com/discordjs/discord.js/pull/10556)
+
+### ClientEvents
+
+`ClientEvents` type has been removed. Use `ClientEventTypes` instead. This change ensures consistency with the rest of the event types across the library.
 
 ### ClientOptions
 
@@ -160,6 +172,10 @@ This utility has been removed. Everything in this class is redundant as all meth
 
 Removed `Guild#shard` as WebSocket shards are now handled by @discordjs/ws.
 
+### GuildApplicationCommandManager
+
+`GuildApplicationCommandManager#fetch()` method has been updated for consistency with other managers. Previously, it accepted two parameters: `id` (a snowflake or an options object) and an `options` object. Now, it only accepts a single `options` argument, which can be a snowflake or an options object that may include an `id` property.
+
 ### GuildAuditLogs
 
 `GuildAuditLogsEntry.Targets.All` has been removed. It was not being used.
@@ -209,6 +225,10 @@ There are two ways to achieve the same behaviour, so the "helper" option has bee
 + const response = await interaction.reply({ content: 'Hello!', withResponse: true });
 + const { message } = response.resource;
 ```
+
+#### GuildMemberResolvable
+
+`GuildMemberResolvable` type has been removed. It was defined as `GuildMember | UserResolvable`, but `UserResolvable` already includes `GuildMember`. Use `UserResolvable` instead.
 
 #### Premium response type
 
